@@ -1,2 +1,2 @@
-const test = 'faisal'
-console.log(`My name is xxx${test}`)
+const test = 'faisal';
+console.log(`My name is xxx${test}`);
