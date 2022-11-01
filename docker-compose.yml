@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    restart: always
+    env_file:
+      - .env
+    container_name: mysql-db
+    ports:
+      - ${MYSQL_PORT:-3306}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+  mysql-db-test:
+    image: mysql:8.0
+    restart: always
+    container_name: mysql-db-test
+    env_file:
+      - .env
+    ports:
+      - ${MYSQL_PORT_TEST:-3307}:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_TEST:-root}
