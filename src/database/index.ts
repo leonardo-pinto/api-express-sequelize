@@ -1,5 +1,5 @@
+import { Sequelize } from "sequelize-typescript";
 import cls from 'cls-hooked'
-import { Sequelize } from 'sequelize'
 
 export default class Database {
 
@@ -34,7 +34,8 @@ export default class Database {
       port,
       database,
       dialect,
-      logging: this.isTestEnvironment ? false : console.log
+      logging: this.isTestEnvironment ? false : console.log,
+      models: [__dirname + '/../models/**/*.ts']
     })
 
     await this.connection.authenticate({ logging: false })
