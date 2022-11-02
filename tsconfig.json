@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
     "outDir": "dist",
+    "target": "es6",
     "rootDir": "src",
     "esModuleInterop": true,
     "module": "commonjs",
+    "experimentalDecorators": true
   },
   "ts-node": {
     "transpileOnly": true
