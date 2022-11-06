@@ -7,4 +7,5 @@ const authController = new LoginController()
 
 export default (router: Router): void => {
   router.post('/register', asyncWrapper(authController.register))
+  router.post('/login', asyncWrapper(authController.login))
 }
