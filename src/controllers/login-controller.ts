@@ -1,12 +1,12 @@
 import { Request } from 'express'
 import User from '../models/user'
+import { BadRequestError, UnauthorizedError } from '../utils/api-error'
 import JwtUtils from '../utils/jwt-utils'
-import { EmailInUseError } from './errors/email-in-use-error'
-import { badRequest, HttpResponse, success, unauthorized } from './protocols'
+import { SuccessResponse } from '../utils/success-response'
 
 export default class LoginController {
 
-  async register(req: Request): Promise<HttpResponse> {
+  async register(req: Request) {
     const {
       email,
       password,
@@ -18,7 +18,7 @@ export default class LoginController {
     const user = await User.findOne({ where: { email } })
 
     if (user) {
-      return badRequest(new EmailInUseError())
+      return new BadRequestError('Email already in use')
     }
 
     await User.create(
@@ -33,20 +33,20 @@ export default class LoginController {
 
     const accessToken = JwtUtils.generateAccessToken(email)
 
-    return success({ accessToken })
+    return new SuccessResponse({ accessToken })
   }
 
-  async login(req: Request): Promise<HttpResponse> {
+  async login(req: Request) {
     const { email, password } = req.body
 
     const user = await User.findOne({ where: { email } })
 
     if (!user || !(await User.comparePasswords(password, user.password))) {
-      return unauthorized()
+      return new UnauthorizedError()
     }
 
    const accessToken = JwtUtils.generateAccessToken(email)
 
-   return success({ accessToken })
+   return new SuccessResponse({ accessToken })
   }
 }

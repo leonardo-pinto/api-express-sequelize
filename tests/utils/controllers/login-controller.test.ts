@@ -22,6 +22,18 @@ describe('Login Controller', () => {
 
   describe('register()', () => {
 
+    test('Should return 400 if request has missing parameters', async () => {
+      const response = await request(app).post('/api/v1/register')
+      .send({
+        email: 'test@example.com',
+        role: 'admin'
+      }).expect(400)
+
+      expect(response.body.error.message).toEqual('Request validation failed')
+      expect(response.body.error.errors).toEqual(expect.any(Array))
+      expect(response.body.error.stack).toEqual(expect.any(String))
+    });
+
     test('Should register a new user successfully', async () => {
       const response = await request(app).post('/api/v1/register')
         .send({
@@ -61,8 +73,8 @@ describe('Login Controller', () => {
         role: 'admin'
       }).expect(400)
 
-      expect(response.body.error.name).toEqual('EmailInUseError')
-      expect(response.body.error.message).toEqual('The provided email is already in use')
+      expect(response.body.error.message).toEqual('Email already in use')
+      expect(response.body.error.stack).toEqual(expect.any(String))
     });
 
     test('Should return 500 if findOne throws', async () => {
@@ -80,8 +92,8 @@ describe('Login Controller', () => {
       })
 
       expect(response.statusCode).toEqual(500)
-      expect(response.body.error.name).toEqual(expect.any(String))
       expect(response.body.error.message).toEqual(expect.any(String))
+      expect(response.body.error.stack).toEqual(expect.any(String))
     })
 
     test('Should return 500 if generateAccessToken throws', async () => {
@@ -99,12 +111,23 @@ describe('Login Controller', () => {
       })
 
       expect(response.statusCode).toEqual(500)
-      expect(response.body.error.name).toEqual(expect.any(String))
       expect(response.body.error.message).toEqual(expect.any(String))
+      expect(response.body.error.stack).toEqual(expect.any(String))
     })
   })
 
   describe('login()', () => {
+
+    test('Should return 400 if request has missing parameters', async () => {
+      const response = await request(app).post('/api/v1/register')
+        .send({
+          email: 'test@example.com'
+        }).expect(400)
+
+      expect(response.body.error.message).toEqual('Request validation failed')
+      expect(response.body.error.errors).toEqual(expect.any(Array))
+      expect(response.body.error.stack).toEqual(expect.any(String))
+    });
     test('Should return an access token if login is valid', async () => {
       await request(app).post('/api/v1/register')
         .send({
@@ -140,8 +163,8 @@ describe('Login Controller', () => {
         password: 'invalid_password',
       }).expect(401)
 
-      expect(response.body.error.name).toEqual('Unauthorized')
-      expect(response.body.error.message).toEqual('Unauthorized Error')
+      expect(response.body.error.message).toEqual(expect.any(String))
+      expect(response.body.error.stack).toEqual(expect.any(String))
     })
   })
 })
