@@ -1,10 +1,10 @@
 import express from 'express'
 import setupMiddlewares from './config/middlewares'
 import setupRoutes from './config/routes'
-import errorsMiddleware from './middlewares/errors'
+import errorHandler from './middlewares/error-handler'
 
 const app = express()
 setupMiddlewares(app)
 setupRoutes(app)
-app.use(errorsMiddleware)
+app.use(errorHandler.handle())
 export default app
