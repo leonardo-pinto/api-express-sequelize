@@ -5,6 +5,17 @@ type AsyncFunction = (req: Request, res: Response, next: NextFunction) => Promis
 
 export const asyncWrapper = (handler: AsyncFunction) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve(handler(req, res, next))
-    .then((response: HttpResponse) => res.status(response.statusCode).send({ data: response.body }))
+    .then((response: HttpResponse) => {
+      if (response.statusCode <= 299) {
+        res.status(response.statusCode).send({ data: response.body })
+      } else {
+        res.status(response.statusCode).send({
+          error: {
+            name: response.body.name,
+            message: response.body.message
+          }
+        })
+      }
+    })
     .catch((err) => next(err))
 }
