@@ -1,3 +1,3 @@
 export * from './cors'
 export * from './body-parser'
-export * from './errors'
+export * from './error-handler'
