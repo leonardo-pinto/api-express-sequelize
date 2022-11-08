@@ -3,7 +3,7 @@ export class SuccessResponse {
   statusCode: number
   data: any
 
-  constructor(data: any, statusCode = 200) {
+  constructor(statusCode: number, data?: any) {
     this.statusCode = statusCode
     this.data = data
   }
