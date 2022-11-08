@@ -1,9 +1,18 @@
 import jwt from 'jsonwebtoken'
 import env from '../config/environment'
 
-export default class JwtUtils {
+export type JwtData = {
+  id: number
+  role: string
+}
 
-  static generateAccessToken(payload: string) {
+export class JwtUtils {
+
+  static generateAccessToken(payload: JwtData) {
     return jwt.sign(payload, env.jwtSecret)
+  }
+
+  static verifyAccessToken(accessToken: string) {
+    return jwt.verify(accessToken, env.jwtSecret)
   }
 }
