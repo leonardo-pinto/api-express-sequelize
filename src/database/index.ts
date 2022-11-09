@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize-typescript";
+import { Sequelize } from 'sequelize-typescript'
 import cls from 'cls-hooked'
 
 export default class Database {
