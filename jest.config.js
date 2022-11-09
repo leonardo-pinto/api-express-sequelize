@@ -7,6 +7,7 @@ module.exports = {
     '!<rootDir>/tests/**',
     '!<rootDir>/src/server.ts',
     '!<rootDir>/src/database/**',
-    '!<rootDir>/src/config/environment.ts'
+    '!<rootDir>/src/config/environment.ts',
+    '!<rootDir>/src/config/types/**'
   ],
 };
