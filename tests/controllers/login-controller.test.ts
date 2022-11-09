@@ -38,21 +38,13 @@ describe('Login Controller', () => {
     })
 
     test('Should register a new user successfully', async () => {
-      const response = await request(app)
-      .post('/api/v1/register')
-      .send({
-        email: 'test@example.com',
-        password: 'any_password',
-        firstName: 'Leonardo',
-        lastName: 'Pinto',
-        role: 'admin'
-      })
+      const response = await TestsHelper.createNewUserRequest()
 
       expect(response.statusCode).toEqual(201)
       const users = await User.findAll()
       expect(users.length).toEqual(1)
       expect(users[0].id).toEqual(1)
-      expect(users[0].email).toEqual('test@example.com')
+      expect(users[0].email).toEqual('valid_email@example.com')
       expect(users[0].firstName).toEqual('Leonardo')
       expect(users[0].lastName).toEqual('Pinto')
       expect(users[0].role).toEqual('admin')
@@ -61,7 +53,7 @@ describe('Login Controller', () => {
 
     test('Should return 400 if email is already in use', async () => {
       await TestsHelper.createNewUser()
-      const response = await TestsHelper.createNewUser()
+      const response = await TestsHelper.createNewUserRequest()
 
       expect(response.statusCode).toEqual(400)
       expect(response.body.error.message).toEqual('Email already in use')
@@ -73,7 +65,7 @@ describe('Login Controller', () => {
         throw new Error()
       })
 
-      const response = await TestsHelper.createNewUser()
+      const response = await TestsHelper.createNewUserRequest()
 
       expect(response.statusCode).toEqual(500)
       expect(response.body.error.message).toEqual(expect.any(String))
@@ -85,7 +77,7 @@ describe('Login Controller', () => {
         throw new Error()
       })
 
-      const response = await TestsHelper.createNewUser()
+      const response = await TestsHelper.createNewUserRequest()
 
       expect(response.statusCode).toEqual(500)
       expect(response.body.error.message).toEqual(expect.any(String))
@@ -107,25 +99,18 @@ describe('Login Controller', () => {
     })
     test('Should return an access token if login is valid', async () => {
       await TestsHelper.createNewUser()
+      const response = await TestsHelper.loginRequest()
 
-      const response = await request(app).post('/api/v1/login')
-      .send({
-        email: 'test@example.com',
-        password: 'any_password',
-      }).expect(200)
-
+      expect(response.statusCode).toEqual(200)
       expect(response.body.data.accessToken).toEqual(expect.any(String))
     })
 
     test('Should return 401 if login is invalid', async () => {
       await TestsHelper.createNewUser()
 
-      const response = await request(app).post('/api/v1/login')
-      .send({
-        email: 'test@example.com',
-        password: 'invalid_password',
-      }).expect(401)
-
+      const response = await TestsHelper.loginRequest('invalid_email@example.com', 'invalid_password')
+      console.log(response)
+      expect(response.statusCode).toEqual(401)
       expect(response.body.error.message).toEqual(expect.any(String))
       expect(response.body.error.stack).toEqual(expect.any(String))
     })
