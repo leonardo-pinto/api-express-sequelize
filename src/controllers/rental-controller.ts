@@ -30,6 +30,10 @@ export default class RentalController {
       where: { id: rentalId }
     })
 
+    if (!rental) {
+      return new BadRequestError('Rental register was not found')
+    }
+
     if (DateTime.fromJSDate(rental.dueDate) > DateTime.now()) {
       await Rental.update(
         { dueDate: DateTime.fromJSDate(rental.dueDate).plus({ days: 7 }) },
@@ -37,6 +41,21 @@ export default class RentalController {
       )
     } else {
       return new BadRequestError('The given rental is overdue. It is not possible to renew it')
+    }
+
+    return new SuccessResponse(200)
+  }
+
+  async return(req: Request){
+    const { rentalId } = req.params
+
+    const updatedRental = await Rental.update(
+      { returnDate: DateTime.now() },
+      { where: { id: rentalId } }
+    )
+
+    if (!updatedRental[0]) {
+      return new BadRequestError('Rental register was not found')
     }
 
     return new SuccessResponse(200)
@@ -60,7 +79,7 @@ export default class RentalController {
       include: Book
     })
 
-    return new SuccessResponse(200, { rentals })
+    return new SuccessResponse(200, rentals)
   }
 
   async getByBookId(req: Request) {
@@ -71,6 +90,6 @@ export default class RentalController {
       include: Book
     })
 
-    return new SuccessResponse(200, { rentals })
+    return new SuccessResponse(200, rentals)
   }
 }
