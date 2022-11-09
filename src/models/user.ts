@@ -1,4 +1,4 @@
-import { Table, Model, Column, DataType, AllowNull, Unique, BeforeSave, AfterSave } from 'sequelize-typescript'
+import { Table, Model, Column, DataType, AllowNull, Unique, BeforeSave } from 'sequelize-typescript'
 import bcrypt from 'bcrypt'
 import env from '../config/environment'
 
