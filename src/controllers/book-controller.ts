@@ -51,6 +51,6 @@ export default class BookController {
   async getAll() {
     const books = await Book.findAll()
 
-    return new SuccessResponse(200, { books })
+    return new SuccessResponse(200, books)
   }
 }
