@@ -1,7 +1,11 @@
-import { Table, Model, Column, DataType, AllowNull, Unique, BeforeSave, HasMany } from 'sequelize-typescript'
+import { Table, Model, Column, DataType, AllowNull, Unique, BeforeSave, HasMany, DefaultScope, Scopes } from 'sequelize-typescript'
 import bcrypt from 'bcrypt'
 import env from '../config/environment'
 import Rental from './rental'
+
+@DefaultScope(() => ({
+  attributes: ['id', 'email', 'firstName', 'lastName', 'role', 'createdAt', 'updatedAt']
+}))
 
 @Table({
   timestamps: true,
