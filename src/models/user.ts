@@ -1,6 +1,7 @@
-import { Table, Model, Column, DataType, AllowNull, Unique, BeforeSave } from 'sequelize-typescript'
+import { Table, Model, Column, DataType, AllowNull, Unique, BeforeSave, HasMany } from 'sequelize-typescript'
 import bcrypt from 'bcrypt'
 import env from '../config/environment'
+import Rental from './rental'
 
 @Table({
   timestamps: true,
@@ -28,6 +29,9 @@ export default class User extends Model {
   @AllowNull(false)
   @Column(DataType.STRING)
   role!: string
+
+  @HasMany(() => Rental)
+  rentals: Rental[]
 
   @BeforeSave
   static async hashPassword(user: User) {
