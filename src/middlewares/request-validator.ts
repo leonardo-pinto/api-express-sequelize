@@ -3,9 +3,9 @@ import { NextFunction, Request, Response } from 'express'
 import { validate } from 'class-validator'
 import { BadRequestError } from '../utils/api-error'
 
-export default class RequestValidator {
+export class RequestValidator {
   static validate = <T extends object> (classInstance: ClassConstructor<T>) => {
-    return async (req: Request, res: Response, next: NextFunction) => {
+    return async (req: Request, _res: Response, next: NextFunction) => {
       const convertedObject = plainToInstance(classInstance, req.body)
       await validate(convertedObject).then((errors) => {
         if (errors.length > 0) {
@@ -16,7 +16,7 @@ export default class RequestValidator {
 
           next(new BadRequestError(
             'Request validation failed',
-            rawErrors
+            Array.from(new Set(rawErrors))
           ))
         }
       })
