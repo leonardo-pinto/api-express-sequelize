@@ -1,24 +1,27 @@
-import TestsHelper from '../../tests-helper'
+import TestsHelper from '../tests-helper'
 import request from 'supertest'
-import User from '../../../src/models/user'
-import JwtUtils from '../../../src/utils/jwt-utils'
+import User from '../../src/models/user'
+import { JwtUtils } from '../../src/utils/jwt-utils'
 
 describe('Login Controller', () => {
 
   let app
 
   beforeAll(async () => {
+    console.log('beforeAll')
     await TestsHelper.startDb()
     app = await TestsHelper.getApp()
   })
 
   afterAll(async () => {
+    console.log('afterAll')
     await TestsHelper.stopDb()
-  });
+  })
 
   beforeEach(async () => {
+    console.log('beforeEach')
     await TestsHelper.syncDb()
-  });
+  })
 
   describe('register()', () => {
 
@@ -32,18 +35,20 @@ describe('Login Controller', () => {
       expect(response.body.error.message).toEqual('Request validation failed')
       expect(response.body.error.errors).toEqual(expect.any(Array))
       expect(response.body.error.stack).toEqual(expect.any(String))
-    });
+    })
 
     test('Should register a new user successfully', async () => {
-      const response = await request(app).post('/api/v1/register')
-        .send({
-          email: 'test@example.com',
-          password: 'any_password',
-          firstName: 'Leonardo',
-          lastName: 'Pinto',
-          role: 'admin'
-        }).expect(200)
-
+      const response = await request(app)
+      .post('/api/v1/register')
+      .send({
+        email: 'test@example.com',
+        password: 'any_password',
+        firstName: 'Leonardo',
+        lastName: 'Pinto',
+        role: 'admin'
+      })
+      console.log(response)
+      expect(response.statusCode).toEqual(201)
       const users = await User.findAll()
       expect(users.length).toEqual(1)
       expect(users[0].id).toEqual(1)
@@ -55,41 +60,20 @@ describe('Login Controller', () => {
     })
 
     test('Should return 400 if email is already in use', async () => {
-      await request(app).post('/api/v1/register')
-      .send({
-        email: 'test@example.com',
-        password: 'any_password',
-        firstName: 'Leonardo',
-        lastName: 'Pinto',
-        role: 'admin'
-      }).expect(200)
+      await TestsHelper.createNewUser()
+      const response = await TestsHelper.createNewUser()
 
-      const response = await request(app).post('/api/v1/register')
-      .send({
-        email: 'test@example.com',
-        password: 'any_password',
-        firstName: 'Leonardo',
-        lastName: 'Pinto',
-        role: 'admin'
-      }).expect(400)
-
+      expect(response.statusCode).toEqual(400)
       expect(response.body.error.message).toEqual('Email already in use')
       expect(response.body.error.stack).toEqual(expect.any(String))
-    });
+    })
 
     test('Should return 500 if findOne throws', async () => {
       jest.spyOn(User, 'findOne').mockImplementationOnce(() => {
         throw new Error()
       })
 
-      const response = await request(app).post('/api/v1/register')
-      .send({
-        email: 'test@example.com',
-        password: 'any_password',
-        firstName: 'Leonardo',
-        lastName: 'Pinto',
-        role: 'admin'
-      })
+      const response = await TestsHelper.createNewUser()
 
       expect(response.statusCode).toEqual(500)
       expect(response.body.error.message).toEqual(expect.any(String))
@@ -101,14 +85,7 @@ describe('Login Controller', () => {
         throw new Error()
       })
 
-      const response = await request(app).post('/api/v1/register')
-      .send({
-        email: 'test@example.com',
-        password: 'any_password',
-        firstName: 'Leonardo',
-        lastName: 'Pinto',
-        role: 'admin'
-      })
+      const response = await TestsHelper.createNewUser()
 
       expect(response.statusCode).toEqual(500)
       expect(response.body.error.message).toEqual(expect.any(String))
@@ -127,16 +104,9 @@ describe('Login Controller', () => {
       expect(response.body.error.message).toEqual('Request validation failed')
       expect(response.body.error.errors).toEqual(expect.any(Array))
       expect(response.body.error.stack).toEqual(expect.any(String))
-    });
+    })
     test('Should return an access token if login is valid', async () => {
-      await request(app).post('/api/v1/register')
-        .send({
-          email: 'test@example.com',
-          password: 'any_password',
-          firstName: 'Leonardo',
-          lastName: 'Pinto',
-          role: 'admin'
-        }).expect(200)
+      await TestsHelper.createNewUser()
 
       const response = await request(app).post('/api/v1/login')
       .send({
@@ -148,14 +118,7 @@ describe('Login Controller', () => {
     })
 
     test('Should return 401 if login is invalid', async () => {
-      await request(app).post('/api/v1/register')
-        .send({
-          email: 'test@example.com',
-          password: 'any_password',
-          firstName: 'Leonardo',
-          lastName: 'Pinto',
-          role: 'admin'
-        }).expect(200)
+      await TestsHelper.createNewUser()
 
       const response = await request(app).post('/api/v1/login')
       .send({
