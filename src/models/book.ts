@@ -1,4 +1,5 @@
-import { Table, Model, Column, DataType, AllowNull, Unique } from 'sequelize-typescript'
+import { Table, Model, Column, DataType, AllowNull, Unique, HasMany } from 'sequelize-typescript'
+import Rental from './rental'
 
 @Table({
   timestamps: true,
@@ -27,5 +28,8 @@ export default class Book extends Model {
 
   @Column(DataType.INTEGER)
   numberOfPages: number
+
+  @HasMany(() => Rental)
+  rentals: Rental[]
 
 }
