@@ -47,7 +47,7 @@ describe('Login Controller', () => {
         lastName: 'Pinto',
         role: 'admin'
       })
-      console.log(response)
+
       expect(response.statusCode).toEqual(201)
       const users = await User.findAll()
       expect(users.length).toEqual(1)
