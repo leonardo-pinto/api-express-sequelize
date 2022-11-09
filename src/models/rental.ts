@@ -24,6 +24,9 @@ export default class Rental extends Model {
   @Column(DataType.DATE)
   dueDate!: Date
 
+  @Column(DataType.DATE)
+  returnDate?: Date
+
   @BelongsTo(() => Book)
   book: Book
 
