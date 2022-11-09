@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsNumber } from "class-validator"
+import { IsNotEmpty, IsString } from "class-validator"
 
 export class RentValidation {
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   bookId!: string
 
 }
