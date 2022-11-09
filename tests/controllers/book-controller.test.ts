@@ -2,9 +2,10 @@ import TestsHelper from '../tests-helper'
 import request from 'supertest'
 import Book from '../../src/models/book'
 
-describe('Login Controller', () => {
+describe('Book Controller', () => {
 
   let app
+  let accessToken: string
 
   beforeAll(async () => {
     await TestsHelper.startDb()
@@ -13,18 +14,19 @@ describe('Login Controller', () => {
 
   afterAll(async () => {
     await TestsHelper.stopDb()
-  });
+  })
 
   beforeEach(async () => {
     await TestsHelper.syncDb()
-  });
+    const newUser = await TestsHelper.createNewUserRequest()
+    accessToken = newUser.body.data.accessToken
+  })
 
   describe('create()', () => {
 
     test('Should return 400 if request has missing parameters', async () => {
-      const newUser = await TestsHelper.createNewUser()
       const response = await request(app).post('/api/v1/book')
-      .set('authorization', `Bearer ${newUser.body.data.accessToken}`)
+      .set('authorization', `Bearer ${accessToken}`)
       .send({
         subject: 'any_subject',
         author: 'any_author',
@@ -37,9 +39,7 @@ describe('Login Controller', () => {
     })
 
     test('Should create a new book', async () => {
-      const newUser = await TestsHelper.createNewUser()
-
-      const response = await TestsHelper.createNewBook(`Bearer ${newUser.body.data.accessToken}`)
+      const response = await TestsHelper.createNewBookRequest(accessToken)
 
       expect(response.statusCode).toEqual(201)
       const books = await Book.findAll()
@@ -52,12 +52,8 @@ describe('Login Controller', () => {
     })
 
     test('Should return 400 if book title is already registered', async () => {
-      const newUser = await TestsHelper.createNewUser()
-
-      await TestsHelper.createNewBook(`Bearer ${newUser.body.data.accessToken}`)
-
-      const response = await TestsHelper.createNewBook(`Bearer ${newUser.body.data.accessToken}`)
-
+      await TestsHelper.createNewBook()
+      const response = await TestsHelper.createNewBookRequest(accessToken)
       expect(response.statusCode).toEqual(400)
       expect(response.body.error.message).toEqual('Book is already registered')
       expect(response.body.error.stack).toEqual(expect.any(String))
@@ -67,10 +63,8 @@ describe('Login Controller', () => {
       jest.spyOn(Book, 'findOne').mockImplementationOnce(() => {
         throw new Error
       })
-      const newUser = await TestsHelper.createNewUser()
 
-      const response = await TestsHelper.createNewBook(`Bearer ${newUser.body.data.accessToken}`)
-
+      const response = await TestsHelper.createNewBookRequest(accessToken)
       expect(response.statusCode).toEqual(500)
       expect(response.body.error.message).toEqual(expect.any(String))
       expect(response.body.error.stack).toEqual(expect.any(String))
@@ -78,24 +72,19 @@ describe('Login Controller', () => {
   })
 
   describe('delete()', () => {
-    test('Should return 400 if book if does not exist', async () => {
-      const newUser = await TestsHelper.createNewUser()
-      const response = await request(app).delete('/api/v1/book/1')
-      .set('authorization', `Bearer ${newUser.body.data.accessToken}`)
-
+    test('Should return 400 if book does not exist', async () => {
+      const response = await TestsHelper.deleteBookRequest('1', accessToken)
+      expect(response.statusCode).toEqual(400)
       expect(response.body.error.message).toEqual('The book request to be deleted was not found')
       expect(response.body.error.stack).toEqual(expect.any(String))
     })
 
     test('Should delete a book successfully', async () => {
-      const newUser = await TestsHelper.createNewUser()
+      await TestsHelper.createNewBookRequest(accessToken)
 
-      await TestsHelper.createNewBook(`Bearer ${newUser.body.data.accessToken}`)
+      const response = await TestsHelper.deleteBookRequest('1', accessToken)
 
-      await request(app).delete('/api/v1/book/1')
-      .set('authorization', `Bearer ${newUser.body.data.accessToken}`)
-      .expect(200)
-
+      expect(response.statusCode).toEqual(200)
       const books = await Book.findAll()
       expect(books.length).toEqual(0)
     })
@@ -103,15 +92,12 @@ describe('Login Controller', () => {
 
   describe('getAll()', () => {
     test('Should return an array containing all books', async () => {
-      const newUser = await TestsHelper.createNewUser()
+      await TestsHelper.createNewBookRequest(accessToken)
 
-      await TestsHelper.createNewBook(`Bearer ${newUser.body.data.accessToken}`)
+      const response = await TestsHelper.getAllBooksRequest(accessToken)
 
-      const response = await request(app).get('/api/v1/book')
-      .set('authorization', `Bearer ${newUser.body.data.accessToken}`)
-      .expect(200)
-
-      expect(response.body.data.books).toHaveLength(1)
+      expect(response.statusCode).toEqual(200)
+      expect(response.body.data).toHaveLength(1)
     })
   })
 })
