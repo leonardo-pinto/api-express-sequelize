@@ -18,15 +18,20 @@ export default (router: Router): void => {
     Auth.handle(['admin', 'user']),
     asyncWrapper(rentalController.renew)
   ),
-  router.get(
-    '/rental/:rentalId',
+  router.put(
+    '/rental/:rentalId/return',
     Auth.handle(['admin', 'user']),
-    asyncWrapper(rentalController.getById)
-  ),
+    asyncWrapper(rentalController.return)
+  )
   router.get(
     '/rental/user',
     Auth.handle(['admin', 'user']),
     asyncWrapper(rentalController.getByUserId)
+    ),
+  router.get(
+    '/rental/:rentalId',
+    Auth.handle(['admin', 'user']),
+    asyncWrapper(rentalController.getById)
   ),
   router.get(
     '/rental/book/:bookId',
