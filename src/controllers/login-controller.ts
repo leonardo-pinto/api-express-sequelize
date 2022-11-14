@@ -45,8 +45,7 @@ export default class LoginController {
     if (!user || !(await User.comparePasswords(password, user.password))) {
       return new UnauthorizedError('Invalid credentials')
     }
-
-   const accessToken = JwtUtils.generateAccessToken(email)
+   const accessToken = JwtUtils.generateAccessToken({ id: user.id, role: user.role })
 
    return new SuccessResponse(200, { accessToken })
   }
