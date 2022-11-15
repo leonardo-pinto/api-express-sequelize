@@ -1,0 +1,6 @@
+export * from './user.mock'
+export * from './book.mock'
+export * from './register-request.mock'
+export * from './login-request.mock'
+export * from './create-book-request.mock'
+export * from './delete-book-request.mock'
