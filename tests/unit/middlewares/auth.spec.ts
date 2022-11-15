@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { Auth } from '../../src/middlewares'
-import { ForbiddenError, UnauthorizedError } from '../../src/utils/api-error'
-import { JwtUtils } from '../../src/utils/jwt-utils'
+import { Auth } from '../../../src/middlewares'
+import { ForbiddenError, UnauthorizedError } from '../../../src/utils/api-error'
+import { JwtUtils } from '../../../src/utils/jwt-utils'
 
 describe('Auth Middleware', () => {
   describe('auth()', () => {

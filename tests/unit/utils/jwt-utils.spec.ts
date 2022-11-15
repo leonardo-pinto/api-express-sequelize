@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import { JwtUtils } from '../../src/utils/jwt-utils'
+import { JwtUtils } from '../../../src/utils/jwt-utils'
 
 describe('Jwt Utils', () => {
 
