@@ -1,9 +1,9 @@
 import TestsHelper from '../tests-helper'
 import request from 'supertest'
-import Rental from '../../src/models/rental'
+import Rental from '../../../src/models/rental'
 
 
-describe('Rental Controller', () => {
+describe('Rental Controller E2E tests', () => {
 
   let app
   let accessToken: string

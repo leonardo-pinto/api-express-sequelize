@@ -1,9 +1,9 @@
 import TestsHelper from '../tests-helper'
 import request from 'supertest'
-import User from '../../src/models/user'
-import { JwtUtils } from '../../src/utils/jwt-utils'
+import User from '../../../src/models/user'
+import { JwtUtils } from '../../../src/utils/jwt-utils'
 
-describe('Login Controller', () => {
+describe('Login Controller E2E tests', () => {
 
   let app
 

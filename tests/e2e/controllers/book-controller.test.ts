@@ -1,8 +1,8 @@
 import TestsHelper from '../tests-helper'
 import request from 'supertest'
-import Book from '../../src/models/book'
+import Book from '../../../src/models/book'
 
-describe('Book Controller', () => {
+describe('Book Controller E2E tests', () => {
 
   let app
   let accessToken: string

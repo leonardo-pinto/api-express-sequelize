@@ -1,8 +1,8 @@
-import Database from '../src/database'
-import dbConfig from '../src/config/database'
+import Database from '../../src/database'
+import dbConfig from '../../src/config/database'
 import request from 'supertest'
-import User from '../src/models/user'
-import Book from '../src/models/book'
+import User from '../../src/models/user'
+import Book from '../../src/models/book'
 
 let db: Database
 
@@ -23,7 +23,7 @@ export default class TestsHelper {
   }
 
   static async getApp() {
-    const app = require('../src/app').default
+    const app = require('../../src/app').default
     return app
   }
 
