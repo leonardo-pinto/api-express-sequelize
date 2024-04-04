@@ -30,7 +30,7 @@ This application consists of a simple Library System, in which users may rent, r
 
 Run the following command to start a local **development** and **test** MySQL database using docker
 ```bash
-$ docker compose-up -d
+$ docker compose up -d
 ```
 
 After the previous command is executed, two distinct containers must be running, which may be checked by typing
